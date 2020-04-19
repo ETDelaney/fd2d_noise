@@ -2,6 +2,6 @@
 code/mex_functions/codegen
 
 *~
-*.mat
+/input/src_rec_combos.mat
 *.mexmaci64
 .DS_Store
