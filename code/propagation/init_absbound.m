@@ -1,0 +1,54 @@
+
+%==========================================================================
+% Initialisation of Cerjan-type absorbing boundary tapers
+%
+% [absbound] = init_absbound()
+%
+% output:
+%--------
+% absbound: array defining absorption for wavefield
+%
+%==========================================================================
+
+function [absbound] = init_absbound()
+
+    % abs spec
+    abspec=1;
+
+    %- get configuration --------------------------------------------------
+    [Lx, Lz, nx, nz] = input_parameters();
+    [X, Z] = define_computational_domain(Lx, Lz, nx, nz);
+
+    absbound = ones(nx, nz);
+    [width, absorb_left, absorb_right, absorb_top, absorb_bottom] = absorb_specs();
+
+
+    %- left boundary ------------------------------------------------------
+    if (absorb_left == 1)
+        absbound = absbound .* ...
+            (double(X' > width) + exp(- abspec*(X' - width) .^ 2 / (2 * width) ^ 2) .* double(X' <= width));
+    end
+
+
+    %- right boundary -----------------------------------------------------
+    if (absorb_right == 1)
+        absbound = absbound .* ...
+            (double(X' < (Lx - width)) + exp(- abspec*(X' - (Lx - width)) .^ 2 / (2 * width) ^ 2) .* double(X' >= (Lx - width)));
+    end
+
+
+    %- bottom boundary ----------------------------------------------------
+    if (absorb_bottom == 1)
+        absbound = absbound .* ...
+            (double(Z' > width) + exp(- abspec*(Z' - width) .^ 2 / (2 * width) ^ 2) .* double(Z' <= width));
+    end
+
+
+    %- top boundary -------------------------------------------------------
+    if (absorb_top == 1)
+        absbound = absbound .* ...
+            (double(Z' < (Lz - width)) + exp(- abspec*(Z' - (Lz - width)) .^ 2 / (2 * width) ^ 2) .* double(Z' >= (Lz - width)));
+    end
+
+
+end
